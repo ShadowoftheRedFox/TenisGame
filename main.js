@@ -331,6 +331,8 @@ class Game {
 
         if (this.ball.speed >= 10) this.ball.trailing = true;
         else this.ball.trailing = false;
+
+        if (this.ball.x < 0 || this.ball.x > w || this.ball.y < 0 || this.ball.y > h) this.resetGame();
     }
 
     loop() { const that = this; var loop = that.loopData, a = 60, b = 1e3 / a, c = window.performance.now(), d = { e: { g: 0, h: c, i: 0 }, f: { g: 0, h: c, i: 0 } }, j = 5, l = "e"; loop.a = 0, loop.main = function mainLoop(m) { loop.stopLoop = window.requestAnimationFrame(loop.main); var n = m, o = n - c, p, k; if (o > b) { for (var q in c = n - o % b, d) ++d[q].g, d[q].i = n - d[q].h; p = d[l], loop.a = Math.round(1e3 / (p.i / p.g) * 100) / 100, k = d.e.g === d.f.g ? j * a : 2 * j * a, p.g > k && (d[l].g = 0, d[l].h = n, d[l].i = 0, l = "e" === l ? "f" : "e"); try { that.state = that.update(n), that.render() } catch (e) { console.log(e), window.cancelAnimationFrame(loop.stopLoop) } } }; return loop; }
