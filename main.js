@@ -260,12 +260,10 @@ class Game {
                 const ang = Math.random() * (Math.PI * 2) / 6 + (Math.PI * 11) / 6;
                 this.ball.vector = { x: Math.cos(ang), y: Math.sin(ang), moving: Math.sin(ang) > 0 ? 1 : -1 }; // then convert it in x y coordinates
                 this.ball.vector.angle = ang % 360;
-                console.log((this.ball.vector.angle / (2 * Math.PI)) * 360);
             } else {
                 const ang = Math.random() * (Math.PI * 2) / 6 + (Math.PI * 5) / 6;
                 this.ball.vector = { x: Math.cos(ang), y: Math.sin(ang), moving: Math.sin(ang) > 0 ? 1 : -1 }; // then convert it in x y coordinates
                 this.ball.vector.angle = ang % 360;
-                console.log((this.ball.vector.angle / (2 * Math.PI)) * 360);
             }
         }
 
@@ -413,7 +411,6 @@ class Game {
         const angle = vector.angle; // get back the angle
         const sign = (Math.round(Math.random()) == 0 ? -1 : 1);
         const newAngle = angle + sign * (Math.random() * ((2 * 2 * Math.PI) / 360));
-        console.log((newAngle / (2 * Math.PI)) * 360);
         this.ball.vector.angle = newAngle;
         this.ball.vector.x = (this.ball.vector.x > 0 ? Math.cos(newAngle) : -Math.cos(newAngle));
         this.ball.vector.y = (this.ball.vector.y > 0 ? Math.sin(newAngle) : -Math.sin(newAngle));
