@@ -49,7 +49,8 @@ class Game {
                 x: 0,
                 y: 0,
                 // no move: 0 | up: 1 | down: -1
-                moving: 0
+                moving: 0,
+                angle: 0
             },
             color: "white",
             size: 10, // in px
@@ -138,6 +139,7 @@ class Game {
             this.ball.last.push({ x: this.ball.x, y: this.ball.y });
             this.ball.last.shift();
         }
+
         if (this.ball.trailing) {
             ctx.globalAlpha = 0.8;
             this.drawCircle(this.ball.last[3].x, this.ball.last[3].y, this.ball.size);
@@ -222,11 +224,49 @@ class Game {
         const w = document.body.offsetWidth,
             h = document.body.offsetHeight;
 
+        if (!this.started) {
+            this.ball.x = document.body.offsetWidth / 2;
+            this.ball.y = document.body.offsetHeight / 2;
+        }
+
         if (this.key.includes("space") && !this.started) {
             this.started = true;
 
-            const ang = Math.random() * 360; // get a random angle from 0° to 360°
-            this.ball.vector = { x: Math.cos(ang), y: Math.sin(ang), moving: Math.sin(ang) > 0 ? 1 : -1 }; // then convert it in x y coordinates
+            const side = Math.round(Math.random());
+
+            /*
+            !Math explanation
+            sin and cos are 2 pi modulos, meaning each time you add 2 pi, you make one full circle circumference.
+            so we want a random number between 0 and 2, given by 'Math.random()*2'
+            then multiply it by pi. You have now a random angle between 0° and 360°.
+
+            but we want two angles, one between 150° and 210° and the otehr between 330° and 30°
+
+
+            Each angle converted with PI
+            150° = 5pi/6
+            210° = 7pi/6
+            330° = 11pi/6
+            30°  = pi/6
+
+            so random left angle:
+            'Math.random() * (Math.PI * 2)/6 + (Math.PI * 5)/6'
+
+            random right angle:
+            'Math.random() * (Math.PI * 2)/6 + (Math.PI * 11)/6'
+            */
+
+            if (side == 0) {
+                const ang = Math.random() * (Math.PI * 2) / 6 + (Math.PI * 11) / 6;
+                this.ball.vector = { x: Math.cos(ang), y: Math.sin(ang), moving: Math.sin(ang) > 0 ? 1 : -1 }; // then convert it in x y coordinates
+                this.ball.vector.angle = ang % 360;
+                console.log((this.ball.vector.angle / (2 * Math.PI)) * 360);
+            } else {
+                const ang = Math.random() * (Math.PI * 2) / 6 + (Math.PI * 5) / 6;
+                this.ball.vector = { x: Math.cos(ang), y: Math.sin(ang), moving: Math.sin(ang) > 0 ? 1 : -1 }; // then convert it in x y coordinates
+                this.ball.vector.angle = ang % 360;
+                console.log((this.ball.vector.angle / (2 * Math.PI)) * 360);
+            }
         }
 
         // player blue movement
@@ -306,6 +346,9 @@ class Game {
                     if (this.debug) console.log(`ball speed: ${this.ball.speed}\np move: ${this.playerBlue.moving}\nball move: ${this.ball.vector.moving}`);
                 }
             }
+
+            //edit the vector to make the ball change a little bit her trajectory
+            this.editVector();
         }
 
         //! red colision
@@ -327,12 +370,53 @@ class Game {
                     if (this.debug) console.log(`ball speed: ${this.ball.speed}\np move: ${this.playerRed.moving}\nball move: ${this.ball.vector.moving}`);
                 }
             }
+
+            //edit the vector to make the ball change a little bit her trajectory
+            this.editVector();
         }
 
         if (this.ball.speed >= 10) this.ball.trailing = true;
         else this.ball.trailing = false;
 
         if (this.ball.x < 0 || this.ball.x > w || this.ball.y < 0 || this.ball.y > h) this.resetGame();
+    }
+
+    editVector() {
+        /*
+        !Math explanation
+        ?How we choose the starting angle
+        sin and cos are 2 pi modulos, meaning each time you add 2 pi, you make one full circle circumference.
+        so we want a random number between 0 and 2, given by 'Math.random()*2'
+        then multiply it by pi. You have now a random angle between 0° and 360°.
+
+        but we want two angles, one between 150° and 210° and the otehr between 330° and 30°
+
+
+        Each angle converted with PI
+        150° = 5pi/6
+        210° = 7pi/6
+        330° = 11pi/6
+        30°  = pi/6
+
+        so random left angle:
+        'Math.random() * (Math.PI * 2)/6 + (Math.PI * 5)/6'
+
+        random right angle:
+        'Math.random() * (Math.PI * 2)/6 + (Math.PI * 11)/6'
+
+        ?How to add -+ 2°
+
+        first of all, if 2PI is 360
+        then (2 * 2PI) / 360 is 2°
+        */
+        var vector = this.ball.vector;
+        const angle = vector.angle; // get back the angle
+        const sign = (Math.round(Math.random()) == 0 ? -1 : 1);
+        const newAngle = angle + sign * (Math.random() * ((2 * 2 * Math.PI) / 360));
+        console.log((newAngle / (2 * Math.PI)) * 360);
+        this.ball.vector.angle = newAngle;
+        this.ball.vector.x = (this.ball.vector.x > 0 ? Math.cos(newAngle) : -Math.cos(newAngle));
+        this.ball.vector.y = (this.ball.vector.y > 0 ? Math.sin(newAngle) : -Math.sin(newAngle));
     }
 
     loop() { const that = this; var loop = that.loopData, a = 60, b = 1e3 / a, c = window.performance.now(), d = { e: { g: 0, h: c, i: 0 }, f: { g: 0, h: c, i: 0 } }, j = 5, l = "e"; loop.a = 0, loop.main = function mainLoop(m) { loop.stopLoop = window.requestAnimationFrame(loop.main); var n = m, o = n - c, p, k; if (o > b) { for (var q in c = n - o % b, d) ++d[q].g, d[q].i = n - d[q].h; p = d[l], loop.a = Math.round(1e3 / (p.i / p.g) * 100) / 100, k = d.e.g === d.f.g ? j * a : 2 * j * a, p.g > k && (d[l].g = 0, d[l].h = n, d[l].i = 0, l = "e" === l ? "f" : "e"); try { that.state = that.update(n), that.render() } catch (e) { console.log(e), window.cancelAnimationFrame(loop.stopLoop) } } }; return loop; }
