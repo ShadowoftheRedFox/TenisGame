@@ -1,0 +1,34 @@
+{
+  "name": "tenisgame",
+  "version": "1.0.0",
+  "description": "A simple tennis game made for fun, to try colision and vector manipulations.",
+  "main": "./index.html",
+  "scripts": {
+    "debug": "nw src/www/ --remote-debugging-port=9222 --allow-file-access-from-files",
+    "dev": "nw",
+    "prod": "nwbuild --zip false --buildDir dist/ ./"
+  },
+  "window": {
+    "title": "Kyrazail Adventure",
+    "icon": "resources/Image/Intro/icon.png",
+    "toolbar": false,
+    "width": 800,
+    "height": 400,
+    "min-width": 400,
+    "min-height": 800
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShadowoftheRedFox/TenisGame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ShadowoftheRedFox/TenisGame/issues"
+  },
+  "homepage": "https://github.com/ShadowoftheRedFox/TenisGame#readme",
+  "devDependencies": {
+    "nw": "^0.44.1-sdk",
+    "nw-builder": "^3.8.0"
+  }
+}
