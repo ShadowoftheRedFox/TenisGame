@@ -328,8 +328,13 @@ class Game {
         //? blue colision
         if ((this.ball.x <= 20 + p.platWidth + this.ball.size) &&
             (b.h + p.platHeight / 2 >= this.ball.y && this.ball.y >= b.h - p.platHeight / 2) &&
-            this.colision.last + this.colision.wait <= Date.now()) {
+            (this.colision.last + this.colision.wait <= Date.now())) {
             this.ball.vector.x = -this.ball.vector.x;
+            /*
+            First bounce:
+            0
+            random angle start
+            */
             this.colision.last = Date.now();
             KnockAudio.play();
 
@@ -352,7 +357,7 @@ class Game {
         //! red colision
         if ((this.ball.x >= w - (20 + p.platWidth + this.ball.size)) &&
             (r.h + p.platHeight / 2 >= this.ball.y && this.ball.y >= r.h - p.platHeight / 2) &&
-            this.colision.last + this.colision.wait <= Date.now()) {
+            (this.colision.last + this.colision.wait <= Date.now())) {
             this.ball.vector.x = -this.ball.vector.x;
             this.colision.last = Date.now();
             KnockAudio.play();
@@ -407,16 +412,16 @@ class Game {
         first of all, if 2PI is 360
         then (2 * 2PI) / 360 is 2°
         */
-        var vector = this.ball.vector;
-        const angle = vector.angle; // get back the angle
+
+        const angle = this.ball.vector.angle; // get back the angle
         const sign = (Math.round(Math.random()) == 0 ? -1 : 1);
-        const newAngle = angle + sign * (Math.random() * ((2 * 2 * Math.PI) / 360));
+        const newAngle = angle + sign * (Math.random() * ((5 * 2 * Math.PI) / 360));
         this.ball.vector.angle = newAngle;
         this.ball.vector.x = (this.ball.vector.x > 0 ? Math.cos(newAngle) : -Math.cos(newAngle));
         this.ball.vector.y = (this.ball.vector.y > 0 ? Math.sin(newAngle) : -Math.sin(newAngle));
     }
 
-    loop() { const that = this; var loop = that.loopData, a = 60, b = 1e3 / a, c = window.performance.now(), d = { e: { g: 0, h: c, i: 0 }, f: { g: 0, h: c, i: 0 } }, j = 5, l = "e"; loop.a = 0, loop.main = function mainLoop(m) { loop.stopLoop = window.requestAnimationFrame(loop.main); var n = m, o = n - c, p, k; if (o > b) { for (var q in c = n - o % b, d) ++d[q].g, d[q].i = n - d[q].h; p = d[l], loop.a = Math.round(1e3 / (p.i / p.g) * 100) / 100, k = d.e.g === d.f.g ? j * a : 2 * j * a, p.g > k && (d[l].g = 0, d[l].h = n, d[l].i = 0, l = "e" === l ? "f" : "e"); try { that.state = that.update(n), that.render() } catch (e) { console.log(e), window.cancelAnimationFrame(loop.stopLoop) } } }; return loop; }
+    loop() { const that = this; var loop = that.loopData, fps = 60, a = fps, b = 1e3 / a, c = window.performance.now(), d = { e: { g: 0, h: c, i: 0 }, f: { g: 0, h: c, i: 0 } }, j = 5, l = "e"; loop.a = 0, loop.main = function mainLoop(m) { loop.stopLoop = window.requestAnimationFrame(loop.main); var n = m, o = n - c, p, k; if (o > b) { for (var q in c = n - o % b, d) ++d[q].g, d[q].i = n - d[q].h; p = d[l], loop.a = Math.round(1e3 / (p.i / p.g) * 100) / 100, k = d.e.g === d.f.g ? j * a : 2 * j * a, p.g > k && (d[l].g = 0, d[l].h = n, d[l].i = 0, l = "e" === l ? "f" : "e"); try { that.state = that.update(n), that.render(); } catch (e) { console.log(e), window.cancelAnimationFrame(loop.stopLoop) } } }; return loop; }
 
     drawCircle(x, y, r, fill, stroke) {
         const ctx = this.ctx;
